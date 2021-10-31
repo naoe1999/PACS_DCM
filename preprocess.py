@@ -1,3 +1,5 @@
+# for case 1 ~ 30
+
 import pydicom
 import pandas as pd
 import numpy as np

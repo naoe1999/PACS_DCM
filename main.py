@@ -8,26 +8,26 @@ from tqdm import tqdm
 from glob import glob
 
 
-# KEY MAPPING
-# Mac
-ARROW_LEFT = 63234
-ARROW_RIGHT = 63235
-ARROW_UP = 63232
-ARROW_DOWN = 63233
-TAB = 9
-SPACE = 32
-# Windows
-# ARROW_LEFT = 2424832
-# ARROW_RIGHT = 2555904
-# ARROW_UP = 2490368
-# ARROW_DOWN = 2621440
+### KEY MAPPING
+### Mac
+# ARROW_LEFT = 63234
+# ARROW_RIGHT = 63235
+# ARROW_UP = 63232
+# ARROW_DOWN = 63233
 # TAB = 9
 # SPACE = 32
+### Windows
+ARROW_LEFT = 2424832
+ARROW_RIGHT = 2555904
+ARROW_UP = 2490368
+ARROW_DOWN = 2621440
+TAB = 9
+SPACE = 32
 
 # DATA DIR
 # for development
-# DATA_ROOT = './data/20210331_preA_30_cases_blind'
-DATA_ROOT = './data/20210514_preA_30_cases_unblind'
+DATA_ROOT = '../anno_data'
+# DATA_ROOT = './data/20210514_preA_30_cases_unblind'
 
 # for distribution
 # DATA_ROOT = '../../data/20210514_preA_30_cases_unblind'
@@ -47,7 +47,7 @@ ZOOM_SIZE_TO = 512
 
 zoom_x = 0
 zoom_y = 0
-display_mode = WINDOWED | ANNOALL | ANNOFILL
+display_mode = WINDOWED | ANNOALL
 anno_memory = display_mode & ANNOALL
 
 
@@ -59,8 +59,8 @@ COLOR_BGR_ANNO4 = (1., 1., .3)  # CYAN
 VET_MAP = {
     'W': (ANNO1, COLOR_BGR_ANNO1),
     'S': (ANNO2, COLOR_BGR_ANNO2),
-    'JY': (ANNO3, COLOR_BGR_ANNO3),
-    'JH': (ANNO4, COLOR_BGR_ANNO4),
+    'JH': (ANNO3, COLOR_BGR_ANNO3),     # from 42~
+    'JY': (ANNO4, COLOR_BGR_ANNO4),     # from 42~
 }
 
 
@@ -114,8 +114,8 @@ def load_images_and_annotations(imgdir, df):
         except:
             z_pos = abs(float(ds.SliceLocation))
 
-        slice_df = df.loc[numerical_equals(df['z'], z_pos)]
-        slices = slice_df[['vet', 'x', 'y', 'z', 'r']].values.tolist()
+        slice_df = df.loc[numerical_equals(df['z_global'], z_pos)]
+        slices = slice_df[['vet', 'x_pixel', 'y_pixel', 'z_global', 'r_pixel']].values.tolist()
         if len(slices) > 0:
             slice_annos.extend(slices)
 

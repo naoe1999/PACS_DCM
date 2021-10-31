@@ -86,6 +86,39 @@ def get_annotation_list(xmlfile):
     return anno_list
 
 
+def get_annotation_list_v2(xmlfile):
+    anno_list = []
+
+    tree = et.parse(xmlfile)
+    study_list = tree.findall('study')                  # it would get just one study
+    for study in study_list:
+        study_name = study.find('origin_pid').text          # case name "LN0000"
+
+        series_list = study.findall('series')           # each series for each vet
+        for series in series_list:
+            series_desc = series.find('series_desc').text   # "LN0000-0"
+            if not series_desc.startswith(study_name):
+                series_desc = study_name + '-' + series.find('ordinal').text
+
+            inst_list = series.findall('instance')      # slide images
+            for inst in inst_list:
+                annotxt = inst.find('annotation_lob').text  # annotation text
+
+                if annotxt is not None:
+                    # z position
+                    img_info = inst.find('image_info2').text
+                    txts = img_info.split(':')
+                    z_global = float(txts[7])
+
+                    txts = annotxt.split('\\')
+                    n = int(txts[0])
+                    shape_list = txts[1:n+1]
+                    for shape in shape_list:
+                        anno_list.append((study_name, series_desc, z_global, shape))
+
+    return anno_list
+
+
 def get_annotation_info(annotxt):
     [xc, yc], r = _getBoundingCircle(annotxt)
     return xc, yc, r
